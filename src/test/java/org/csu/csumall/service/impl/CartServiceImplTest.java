@@ -24,7 +24,7 @@ public class CartServiceImplTest {
         int productId = 29;
         int count = 1;
         ServerResponse<CartVo> response = iCartService.add(userId, productId, count);
-        assertEquals(response.getData().getCartProductVoList().size(), 4);
+        assertEquals(response.getData().getCartProductVoList().size(), 3);
     }
 
     @Test
