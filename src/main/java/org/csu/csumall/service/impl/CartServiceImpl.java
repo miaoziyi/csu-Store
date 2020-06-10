@@ -1,20 +1,20 @@
 package org.csu.csumall.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import org.apache.logging.log4j.util.PropertiesUtil;
+
 import org.csu.csumall.common.Const;
 import org.csu.csumall.common.ResponseCode;
 import org.csu.csumall.common.ServerResponse;
 import org.csu.csumall.entity.Cart;
 import org.csu.csumall.entity.Product;
 
-import org.csu.csumall.entity.User;
+
 import org.csu.csumall.mapper.CartMapper;
 import org.csu.csumall.mapper.ProductMapper;
 import org.csu.csumall.service.ICartService;
@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Service("iCartService")
 public class CartServiceImpl implements ICartService {
 
     @Autowired

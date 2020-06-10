@@ -1,4 +1,4 @@
-package org.csu.csumall.controller;
+package org.csu.csumall.controller.portal;
 
 import org.csu.csumall.common.Const;
 import org.csu.csumall.common.ResponseCode;
