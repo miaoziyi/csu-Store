@@ -1,5 +1,6 @@
 package org.csu.csumall.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,8 +12,8 @@ public class OrderItem {
     private Integer id;
 
     private Integer userId;
-
-    private Long orderNo;
+    @TableField(value="order_no",exist = true)
+    private Long orderNumber;
 
     private Integer productId;
 
@@ -28,6 +29,7 @@ public class OrderItem {
 
     private LocalDateTime createTime;
 
-    private LocalDateTime updateTime;
+    private LocalDateTime  updateTime;
+
 
 }

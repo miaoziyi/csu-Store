@@ -1,5 +1,6 @@
 package org.csu.csumall.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -10,7 +11,8 @@ public class Order {
 
     private Integer id;
 
-    private Long orderNo;
+    @TableField(value="order_no",exist = true)
+    private Long orderNumber;
 
     private Integer userId;
 

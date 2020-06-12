@@ -19,6 +19,7 @@ import org.csu.csumall.mapper.CartMapper;
 import org.csu.csumall.mapper.ProductMapper;
 import org.csu.csumall.service.ICartService;
 import org.csu.csumall.utils.BigDecimalUtil;
+import org.csu.csumall.utils.PropertiesUtil;
 import org.csu.csumall.vo.CartProductVo;
 import org.csu.csumall.vo.CartVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,7 +159,7 @@ public class CartServiceImpl implements ICartService {
         }
         LambdaQueryWrapper<Cart> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(Cart::getUserId, userId).apply("IFNULL(sum(quantity),0) as count");
-        // todo 修改为查询数值
+        // todo 看看查询的结果能否从list修改为Int
         List<Map<String, Object>> resultList = cartMapper.selectMaps( lambdaQueryWrapper );
         return ServerResponse.createBySuccess( Integer.parseInt(resultList.get(0).get("count").toString()) );
     }
@@ -244,8 +245,7 @@ public class CartServiceImpl implements ICartService {
         cartVo.setCartTotalPrice(cartTotalPrice);
         cartVo.setCartProductVoList(cartProductVoList);
         cartVo.setAllChecked( this.getAllCheckedStatus(userId) );
-        // todo 图片信息待处理
-        cartVo.setImageHost("wait to process");
+        cartVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
         return cartVo;
     }
 
