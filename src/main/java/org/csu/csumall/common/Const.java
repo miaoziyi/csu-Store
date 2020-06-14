@@ -1,10 +1,14 @@
 package org.csu.csumall.common;
 
 import com.google.common.collect.Sets;
+import lombok.Getter;
 
 import java.util.Set;
 
 public class Const {
+
+    //递归分类的根节点值
+    public static  int root_category = 0;
 
     public static final String CURRENT_USER = "current_user";
 
@@ -34,7 +38,8 @@ public class Const {
 
     public enum ProductStatusEnum
     {
-        ON_SALE(1,"在线");
+        ON_SALE(1,"在线"),
+        OFF_SALE(2,"下架");
         private String value;
         private int code;
         ProductStatusEnum(int code,String value){
@@ -143,5 +148,36 @@ public class Const {
         }
 
     }
+
+    //category中的属性
+    @Getter
+    public enum SortOrderCode{
+        First_category(0,"一等商品分类");
+
+        //todo 添加排序编号
+        private int code;
+        private String description;
+
+        SortOrderCode(int code, String description) {
+            this.code = code;
+            this.description = description;
+        }
+    }
+
+    @Getter
+    public enum DeleteTypeCode{
+
+        cascade(0,"级联删除"),
+        non_cascade(1,"非级联删除");
+
+        private Integer code;
+        private String description;
+
+        DeleteTypeCode(Integer code, String description) {
+            this.code = code;
+            this.description = description;
+        }
+    }
+
 
 }
