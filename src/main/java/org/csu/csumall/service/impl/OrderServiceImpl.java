@@ -682,24 +682,28 @@ public class OrderServiceImpl implements IOrderService {
      * @param pageSize
      * @return
      */
-    // todo 可能是对order分页， 需要修改
     @Override
     public ServerResponse<Page> manageSearch(Long orderNumber, int pageNum, int pageSize){
-        Page<OrderItem> page = new Page<>(pageNum, pageSize);
-        Order order = orderMapper.selectOne(Wrappers.<Order>query().eq("order_no",orderNumber));
-        if(order != null){
-            page = orderItemMapper.selectPage(page, Wrappers.<OrderItem>query().eq("order_no",orderNumber));
-            List<OrderItem> orderItemList = page.getRecords();
-            OrderVo orderVo = assembleOrderVo(order, orderItemList);
-            Page<OrderVo> pageResult = new Page<>();
-            pageResult.setCurrent(page.getCurrent());
-            pageResult.setTotal(page.getTotal());
-            pageResult.setPages(page.getPages());
-            pageResult.setSize(page.getSize());
-            pageResult.setRecords( Lists.newArrayList(orderVo) );
-            return ServerResponse.createBySuccess(pageResult);
+        //这里实际是根据Order查询分页的，现在只是精准查询所以只有一页，以后需要进行模糊匹配所以会有很多页，因此要根据Order分页
+        Page<Order> orderPage = new  Page<>(pageNum,pageSize);;
+        //以后查询条件改为模糊查询
+        List<Order> orderList = orderMapper.selectPage(orderPage,Wrappers.<Order>query().eq("order_no",orderNumber)).getRecords();
+
+        Page<OrderVo> orderVoresult = new Page<>();
+        if(!orderList.isEmpty()) {
+            for (Order orderitem : orderList) {
+                List<OrderItem> orderItemList = orderItemMapper.selectList(Wrappers.<OrderItem>query().eq("order_no", orderNumber));
+                OrderVo orderVo = assembleOrderVo(orderitem, orderItemList);
+                List<OrderVo> orderVoList = Lists.newArrayList(orderVo);
+                orderVoresult.setRecords(orderVoList);
+            }
+            orderVoresult.setCurrent(pageNum);
+            orderVoresult.setSize(pageSize);
+            orderVoresult.setTotal(orderPage.getTotal());
+            orderVoresult.getRecords().forEach(System.out::println);
+            return ServerResponse.createBySuccess(orderVoresult);
         }
-        return ServerResponse.createByErrorMessage("订单不存在");
+        return ServerResponse.createByErrorMessage("没有符合条件的订单");
     }
 
     /**

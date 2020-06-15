@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@RequestMapping("manage/product/")
+@RequestMapping("/manage/product")
 public class ProductManageController {
 
     @Autowired

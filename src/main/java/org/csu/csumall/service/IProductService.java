@@ -13,7 +13,7 @@ public interface IProductService {
     ServerResponse<ProductDetailVo> getProductDetail(Integer productId);
 
     ServerResponse updateProductStatus(Integer productId, Integer status);
-    // todo 修改
+
     ServerResponse addProduct(Product product);
 
     ServerResponse upload(MultipartFile file, HttpServletRequest request);
