@@ -20,11 +20,11 @@ public class CartServiceImplTest {
 
     @Test
     public void add() {
-        int userId = 21;
-        int productId = 29;
+        int userId = 1;
+        int productId = 32;
         int count = 1;
         ServerResponse<CartVo> response = iCartService.add(userId, productId, count);
-        assertEquals(response.getData().getCartProductVoList().size(), 3);
+        assertEquals(response.getData().getCartProductVoList().size(), 5);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class CartServiceImplTest {
 
     @Test
     public void getCartProductCount() {
-        int userId = 21;
+        int userId = 1;
         ServerResponse<Integer> response = iCartService.getCartProductCount(userId);
         System.out.println( response.getData() );
     }

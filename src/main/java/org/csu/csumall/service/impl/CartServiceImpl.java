@@ -1,8 +1,9 @@
 package org.csu.csumall.service.impl;
 
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.google.common.base.Splitter;
@@ -140,10 +141,13 @@ public class CartServiceImpl implements ICartService {
     public ServerResponse<CartVo> selectOrUnSelect(Integer userId, Integer productId, Integer checked) {
         Cart cart = new Cart();
         cart.setChecked(checked);
-        cartMapper.update(
-                cart,
-            Wrappers.<Cart>lambdaUpdate().eq(Cart::getUserId, userId).eq(Cart::getProductId, productId)
-        );
+        LambdaUpdateWrapper<Cart> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        lambdaUpdateWrapper.eq(Cart::getUserId, userId);
+        if( productId != null )
+        {
+            lambdaUpdateWrapper.eq(Cart::getProductId, productId);
+        }
+        cartMapper.update(cart, lambdaUpdateWrapper);
         return this.list(userId);
     }
 
@@ -157,10 +161,10 @@ public class CartServiceImpl implements ICartService {
         if(userId == null){
             return ServerResponse.createByError();
         }
-        LambdaQueryWrapper<Cart> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(Cart::getUserId, userId).apply("IFNULL(sum(quantity),0) as count");
+        QueryWrapper<Cart> QueryWrapper = new QueryWrapper<>();
+        QueryWrapper.eq("user_id", userId).select("IFNULL(sum(quantity),0) as count");
         // todo 看看查询的结果能否从list修改为Int
-        List<Map<String, Object>> resultList = cartMapper.selectMaps( lambdaQueryWrapper );
+        List<Map<String, Object>> resultList = cartMapper.selectMaps( QueryWrapper );
         return ServerResponse.createBySuccess( Integer.parseInt(resultList.get(0).get("count").toString()) );
     }
 
