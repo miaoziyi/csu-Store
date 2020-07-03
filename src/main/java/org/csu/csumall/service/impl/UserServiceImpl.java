@@ -2,6 +2,7 @@ package org.csu.csumall.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.StringUtils;
 import org.csu.csumall.common.Const;
 import org.csu.csumall.common.ServerResponse;
@@ -10,10 +11,13 @@ import org.csu.csumall.entity.User;
 import org.csu.csumall.mapper.UserMapper;
 import org.csu.csumall.service.IUserService;
 import org.csu.csumall.utils.MD5Util;
+import org.csu.csumall.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service("iUserService")
@@ -336,6 +340,38 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();
+    }
+
+    @Override
+    public ServerResponse<Page> getUserList(Integer pageNum, Integer pageSize) {
+        Page<User> page = new Page<>(pageNum, pageSize);
+        page = userMapper.selectPage(page,null);
+        List<User> userList = page.getRecords();
+        List<UserVo> userVoList = this.assembleUserVoList(userList);
+        Page<UserVo> pageResult = new Page<>();
+
+        pageResult.setCurrent(page.getCurrent());
+        pageResult.setTotal(page.getTotal());
+        pageResult.setPages(page.getPages());
+        pageResult.setSize(page.getSize());
+        pageResult.setRecords(userVoList);
+
+        return ServerResponse.createBySuccess(pageResult);
+    }
+
+    private List<UserVo> assembleUserVoList(List<User> userList)
+    {
+        List<UserVo> userVoList = new ArrayList<>();
+        for (User user : userList) {
+            UserVo userVo = new UserVo();
+            userVo.setId(user.getId());
+            userVo.setUsername(user.getUsername());
+            userVo.setEmail(user.getEmail());
+            userVo.setPhone(user.getPhone());
+            userVo.setCreateTime(user.getCreateTime());
+            userVoList.add(userVo);
+        }
+        return userVoList;
     }
 
 

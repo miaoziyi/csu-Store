@@ -105,13 +105,11 @@ public class ProductServiceImpl implements IProductService {
      */
     @Override
     public ServerResponse updateProductStatus(Integer productId, Integer status) {
-        //todo 验证登录，权限
         Product product = productMapper.selectById(productId);
         if(product == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"没有此产品");
         }
-
-        if(EnumUtils.isValidEnum(Const.ProductStatusEnum.class, status.toString())){
+        if(Const.ProductStatusEnum.isExist(status)){
             product.setStatus(status);
             try {
                 productMapper.updateById(product);
@@ -131,7 +129,6 @@ public class ProductServiceImpl implements IProductService {
      */
     @Override
     public ServerResponse addProduct(Product product) {
-        //todo 添加登录检验，权限验证
         product.setUpdateTime(LocalDateTime.now());
         try {
             if(productMapper.selectById( product.getId() ) != null){
@@ -154,8 +151,6 @@ public class ProductServiceImpl implements IProductService {
      */
     @Override
     public ServerResponse upload(MultipartFile file, HttpServletRequest request) {
-        //todo 验证身份
-        //todo 注意path问题
         String path = request.getSession().getServletContext().getRealPath("upload");
         String targetFileName = fileService.upLoadFile(file,path);
         String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
@@ -176,10 +171,7 @@ public class ProductServiceImpl implements IProductService {
      */
     @Override
     public ServerResponse<Page> getProductList(Integer categoryId, String keyword, Integer pageNum, Integer pageSize, String orderBy) {
-        Page<Product> page = new Page<>();
-        page.setCurrent(pageNum);
-        page.setSize(pageSize);
-
+        Page<Product> page = new Page<>(pageNum, pageSize);
         QueryWrapper<Product> query = new QueryWrapper<>();
 //        查询条件中加入分类查询
         List<Integer> categoryIdList = categoryService.getAllChildren(categoryId).getData();

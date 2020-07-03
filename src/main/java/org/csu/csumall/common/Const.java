@@ -54,6 +54,15 @@ public class Const {
         public int getCode() {
             return code;
         }
+
+        public static boolean isExist(int code){
+            for(ProductStatusEnum productStatusEnum : values()){
+                if(productStatusEnum.getCode() == code){
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     public enum OrderStatusEnum

@@ -1,6 +1,7 @@
 package org.csu.csumall.service;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.csu.csumall.common.ServerResponse;
 import org.csu.csumall.entity.User;
 
@@ -25,5 +26,7 @@ public interface IUserService {
     ServerResponse<User> getInformation(Integer userId);
 
     ServerResponse checkAdminRole(User user);
+
+    ServerResponse<Page> getUserList(Integer pageNum, Integer pageSize);
 
 }

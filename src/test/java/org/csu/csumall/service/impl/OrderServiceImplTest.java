@@ -33,6 +33,11 @@ public class OrderServiceImplTest {
 
     @Test
     public void getOrderDetail() {
+        int userId = 1;
+        long orderNo = 1491830695216L;
+        ServerResponse<OrderVo> response = iOrderService.getOrderDetail(userId, orderNo);
+        OrderVo orderVo = response.getData();
+        System.out.println( orderVo.getOrderItemVoList().size() );
     }
 
     @Test
@@ -99,4 +104,6 @@ public class OrderServiceImplTest {
     @Test
     public void manageSendGoods() {
     }
+
+
 }

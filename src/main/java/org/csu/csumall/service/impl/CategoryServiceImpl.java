@@ -36,7 +36,6 @@ public class CategoryServiceImpl implements ICategoryService {
      * */
     @Override
     public ServerResponse addCategory(Integer parentId, String categoryName) {
-        //TODO 验证管理员权限
         //todo sortorder插入问题
         if( parentId == null || StringUtils.isBlank(categoryName) )
         {
@@ -64,7 +63,6 @@ public class CategoryServiceImpl implements ICategoryService {
      * @return
      * */
     public ServerResponse<List<Category>> getChildrenCategory(Integer categoryId){
-        //todo 验证管理员权限，登录
         QueryWrapper<Category> query = new QueryWrapper<>();
         query.eq("parent_id",categoryId);
         List<Category> categoryList = categoryMapper.selectList(query);
@@ -80,7 +78,6 @@ public class CategoryServiceImpl implements ICategoryService {
      * @return
      * */
     public ServerResponse<List<Integer>> getAllChildren(Integer categoryId){
-        //todo 验证管理员权限，登录
         Category category = categoryMapper.selectById(categoryId);
         if(category != null || categoryId == Const.root_category){
             Set<Category> categorySet = Sets.newHashSet();
@@ -104,7 +101,6 @@ public class CategoryServiceImpl implements ICategoryService {
      * @return
      * */
     private Set<Category> findAllChildrenCategory(Integer categoryId, Set<Category> categorySet){
-        //todo 验证管理员权限,登录
         Category category = categoryMapper.selectById(categoryId);
         if(category != null){
             categorySet.add(category);
@@ -125,7 +121,6 @@ public class CategoryServiceImpl implements ICategoryService {
      * @return
      * */
     public ServerResponse updateCategoryName(Integer categoryId, String categoryName){
-        //todo 验证管理员权限,登录
         Category category = categoryMapper.selectById(categoryId);
         if(category != null){
             category.setName(categoryName);
@@ -146,7 +141,6 @@ public class CategoryServiceImpl implements ICategoryService {
      * @return
      * */
     public ServerResponse deleteCategory(Integer categoryId,Integer deleteType){
-        //todo 验证管理员权限,登录
         if(categoryMapper.selectById(categoryId) == null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"没有此分类");
         }

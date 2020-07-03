@@ -174,7 +174,7 @@ public class OrderServiceImpl implements IOrderService {
         Order order = orderMapper.selectOne(query);
         if(order != null){
             QueryWrapper<OrderItem> queryOrderItem = new QueryWrapper<>();
-            query.eq("order_no",orderNumber).eq("user_id",userId);
+            queryOrderItem.eq("order_no", orderNumber).eq("user_id", userId);
             List<OrderItem> orderItemList = orderItemMapper.selectList(queryOrderItem);
             OrderVo orderVo = assembleOrderVo(order,orderItemList);
             return ServerResponse.createBySuccess(orderVo);
@@ -491,7 +491,7 @@ public class OrderServiceImpl implements IOrderService {
         String outTradeNo = order.getOrderNumber().toString();
 
         // (必填) 订单标题，粗略描述用户的支付目的。如“xxx品牌xxx门店当面付扫码消费”
-        String subject = new StringBuilder().append("CSUmall扫码支付，订单号:").append(outTradeNo).toString();
+        String subject = new StringBuilder().append("CSUMall扫码支付，订单号:").append(outTradeNo).toString();
 
         // (必填) 订单总金额，单位为元，不能超过1亿元
         // 如果同时传入了【打折金额】,【不可打折金额】,【订单总金额】三者,则必须满足如下条件:【订单总金额】=【打折金额】+【不可打折金额】
@@ -569,8 +569,8 @@ public class OrderServiceImpl implements IOrderService {
                 }
 
                 logger.info("qrPath:" + qrPath);
-                String qrurl = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFile.getName();
-                resultMap.put("qrurl", qrurl);
+                String qrUrl = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFile.getName();
+                resultMap.put("qrUrl", qrUrl);
                 return ServerResponse.createBySuccess(resultMap);
             case FAILED:
                 logger.error("支付宝预下单失败!!!");
