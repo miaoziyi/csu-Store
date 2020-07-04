@@ -627,7 +627,8 @@ public class OrderServiceImpl implements IOrderService {
         payInfo.setPayPlatform(Const.PayPlatformEnum.ALIPAY.getCode());
         payInfo.setPlatformNumber(tradeNo);
         payInfo.setPlatformStatus(tradeStatus);
-
+        payInfo.setCreateTime( LocalDateTime.now() );
+        payInfo.setUpdateTime( LocalDateTime.now() );
         payInfoMapper.insert(payInfo);
 
         return ServerResponse.createBySuccess();

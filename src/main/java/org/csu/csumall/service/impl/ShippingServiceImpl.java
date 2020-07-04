@@ -10,6 +10,7 @@ import org.csu.csumall.service.IShippingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service("iShippingService")
@@ -21,6 +22,8 @@ public class ShippingServiceImpl implements IShippingService {
     @Override
     public ServerResponse add(Integer userId, Shipping shipping) {
         shipping.setUserId(userId);
+        shipping.setCreateTime(LocalDateTime.now());
+        shipping.setUpdateTime(LocalDateTime.now());
         int rowCount = shippingMapper.insert(shipping);
         if( rowCount > 0 )
         {
@@ -44,6 +47,7 @@ public class ShippingServiceImpl implements IShippingService {
 
     @Override
     public ServerResponse update(Integer userId, Shipping shipping) {
+        shipping.setUpdateTime(LocalDateTime.now());
         int rowCount = shippingMapper.update(shipping,
                 Wrappers.<Shipping>lambdaUpdate().eq(Shipping::getUserId, userId).eq(Shipping::getId, shipping.getId()) );
         if(rowCount > 0){
