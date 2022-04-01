@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.example.demo")
+@MapperScan("com.example.demo.persistence")
 public class DemoApplication {
 
     public static void main(String[] args) {
