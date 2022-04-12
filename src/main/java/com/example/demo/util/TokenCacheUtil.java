@@ -22,7 +22,7 @@ public class TokenCacheUtil {
                 }
             });
 
-    public static void setLoadingCache(String key,String value){
+    public static void setToken(String key,String value){
         loadingCache.put(key, value);
     }
 
