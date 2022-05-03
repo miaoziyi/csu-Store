@@ -35,13 +35,15 @@ public class UserController {
 
     @PostMapping("check_field")
     public CommonResponse<String> checkField(
-            @RequestParam @Validated @NotBlank(message = "字段名不能为空") String fieldName,
-            @RequestParam @Validated @NotBlank(message = "字段值不能为空") String fieldValue) {
+            @RequestParam String fieldName,
+            @RequestParam String fieldValue) {
         return userService.checkField(fieldName, fieldValue);
     }
 
     @PostMapping("register")
-    public CommonResponse<String> register(@RequestBody @Valid User user){
+    @ResponseBody
+    public CommonResponse<String> register(User user){
+        System.out.println("注册");
         return userService.register(user);
     }
 
@@ -87,27 +89,38 @@ public class UserController {
         }
         return userService.getUserDetail(loginUser.getId());
     }
-
     @PostMapping("update_user_info")
-    public CommonResponse<User> updateUserInfo(@RequestBody @Valid UpdateUserDTO updateUser,
-                                               HttpSession session){
+    public CommonResponse<String> updateUserInfo(@RequestParam String type,@RequestParam String edit,HttpSession session){
+        System.out.println(edit);
         User loginUser = (User) session.getAttribute(CONSTANT.LOGIN_USER);
-        if(loginUser == null){
-            return CommonResponse.createForError("用户未登录");
-        }
-        loginUser.setEmail(updateUser.getEmail());
-        loginUser.setPhone(updateUser.getPhone());
-        loginUser.setQuestion(updateUser.getQuestion());
-        loginUser.setAnswer(updateUser.getAnswer());
-
-        CommonResponse<String> result = userService.updateUserInfo(loginUser);
+        System.out.println(loginUser);
+        CommonResponse<String> result = userService.updateUserName(loginUser.getId(),type,edit);
         if(result.isSuccess()){
-            loginUser = userService.getUserDetail(loginUser.getId()).getData();
-            session.setAttribute(CONSTANT.LOGIN_USER, loginUser);
-            return CommonResponse.createForSuccess(loginUser);
+            return CommonResponse.createForSuccessMessage("更新"+type+"成功");
         }
         return CommonResponse.createForError(result.getMessage());
     }
+
+//    @PostMapping("update_user_info")
+//    public CommonResponse<User> updateUserInfo(@RequestBody @Valid UpdateUserDTO updateUser,
+//                                               HttpSession session){
+//        User loginUser = (User) session.getAttribute(CONSTANT.LOGIN_USER);
+//        if(loginUser == null){
+//            return CommonResponse.createForError("用户未登录");
+//        }
+//        loginUser.setEmail(updateUser.getEmail());
+//        loginUser.setPhone(updateUser.getPhone());
+//        loginUser.setQuestion(updateUser.getQuestion());
+//        loginUser.setAnswer(updateUser.getAnswer());
+//
+//        CommonResponse<String> result = userService.updateUserInfo(loginUser);
+//        if(result.isSuccess()){
+//            loginUser = userService.getUserDetail(loginUser.getId()).getData();
+//            session.setAttribute(CONSTANT.LOGIN_USER, loginUser);
+//            return CommonResponse.createForSuccess(loginUser);
+//        }
+//        return CommonResponse.createForError(result.getMessage());
+//    }
 
     @GetMapping("logout")
     public CommonResponse<String> logout(HttpSession session){

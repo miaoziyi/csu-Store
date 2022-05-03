@@ -201,12 +201,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public CommonResponse<String> updateUserName(Integer id,String type,String edit) {
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        User user = new User();
+        user.setId(id);
+        updateWrapper.eq("id",id);
+        updateWrapper.set(type,edit);
+        long rows = userMapper.update(user,updateWrapper);
+        if(rows > 0){
+            return CommonResponse.createForSuccessMessage("更新用户"+type+"成功");
+        }
+        return CommonResponse.createForError("更新用户"+type+"失败");
+    }
+
+    @Override
     public CommonResponse<User> getUserDetail(Integer userId){
         User user = userMapper.selectById(userId);
         if(user == null){
             return CommonResponse.createForError("找不到当前用户信息");
         }
-        user.setPassword(StringUtils.EMPTY);
+//        user.setPassword(StringUtils.EMPTY);
         return CommonResponse.createForSuccess(user);
     }
 
