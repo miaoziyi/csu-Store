@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
     public CommonResponse<String> getForgetQuestion(String username){
         CommonResponse<String> checkResult = this.checkField(CONSTANT.USER_FIELDS.USERNAME,username);
         if(checkResult.isSuccess()){
-            return CommonResponse.createForError("该用户名不存在");
+            return CommonResponse.createForError("用户名不存在");
         }
 
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
             System.out.println(username+":"+forgetToken);
             return CommonResponse.createForSuccess(forgetToken);
         }
-        return CommonResponse.createForError("找回密码的问题答案错误");
+        return CommonResponse.createForError("密码保护问题答案错误");
     }
 
     @Override
@@ -170,38 +170,38 @@ public class UserServiceImpl implements UserService {
         return CommonResponse.createForError("密码更新失败");
     }
 
+//    @Override
+//    public CommonResponse<String> updateUserInfo(User user){
+//
+//        //检查更新的email是否可用
+//        CommonResponse<String> checkResult = checkField(CONSTANT.USER_FIELDS.EMAIL, user.getEmail());
+//        if(!checkResult.isSuccess()){
+//            return checkResult;
+//        }
+//        //检查更新的phone是否可用
+//        checkResult = checkField(CONSTANT.USER_FIELDS.PHONE, user.getPhone());
+//        if(!checkResult.isSuccess()){
+//            return checkResult;
+//        }
+//
+//        user.setUpdateTime(LocalDateTime.now());
+//        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+//        updateWrapper.eq("id",user.getId());
+//        updateWrapper.set("email",user.getEmail());
+//        updateWrapper.set("phone", user.getPhone());
+//        updateWrapper.set("question", user.getQuestion());
+//        updateWrapper.set("answer", user.getAnswer());
+//        updateWrapper.set("update_time", user.getUpdateTime());
+//        long rows = userMapper.update(user,updateWrapper);
+//
+//        if(rows > 0){
+//            return CommonResponse.createForSuccessMessage("更新用户信息成功");
+//        }
+//        return CommonResponse.createForError("更新用户信息失败");
+//    }
+
     @Override
-    public CommonResponse<String> updateUserInfo(User user){
-
-        //检查更新的email是否可用
-        CommonResponse<String> checkResult = checkField(CONSTANT.USER_FIELDS.EMAIL, user.getEmail());
-        if(!checkResult.isSuccess()){
-            return checkResult;
-        }
-        //检查更新的phone是否可用
-        checkResult = checkField(CONSTANT.USER_FIELDS.PHONE, user.getPhone());
-        if(!checkResult.isSuccess()){
-            return checkResult;
-        }
-
-        user.setUpdateTime(LocalDateTime.now());
-        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("id",user.getId());
-        updateWrapper.set("email",user.getEmail());
-        updateWrapper.set("phone", user.getPhone());
-        updateWrapper.set("question", user.getQuestion());
-        updateWrapper.set("answer", user.getAnswer());
-        updateWrapper.set("update_time", user.getUpdateTime());
-        long rows = userMapper.update(user,updateWrapper);
-
-        if(rows > 0){
-            return CommonResponse.createForSuccessMessage("更新用户信息成功");
-        }
-        return CommonResponse.createForError("更新用户信息失败");
-    }
-
-    @Override
-    public CommonResponse<String> updateUserName(Integer id,String type,String edit) {
+    public CommonResponse<String> updateUserInfo(Integer id,String type,String edit) {
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
         User user = new User();
         user.setId(id);

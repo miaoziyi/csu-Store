@@ -18,9 +18,9 @@ public interface UserService {
     //登录状态下重置密码
     CommonResponse<String> resetPassword(String oldPassword, String newPassword, User user);
     //登录状态下更新用户信息
-    CommonResponse<String> updateUserInfo(User user);
+//    CommonResponse<String> updateUserInfo(User user);
     //更新用户姓名
-    CommonResponse<String> updateUserName(Integer id,String type,String edit);
+    CommonResponse<String> updateUserInfo(Integer id,String type,String edit);
     //登录状态下获取用户详细信息
     CommonResponse<User> getUserDetail(Integer userId);
 }

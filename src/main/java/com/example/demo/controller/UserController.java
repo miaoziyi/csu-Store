@@ -90,11 +90,11 @@ public class UserController {
         return userService.getUserDetail(loginUser.getId());
     }
     @PostMapping("update_user_info")
-    public CommonResponse<String> updateUserInfo(@RequestParam String type,@RequestParam String edit,HttpSession session){
+    public CommonResponse<String> updateUserInfo(@RequestParam String type,@NotBlank(message = "不能为空")@RequestParam String edit,HttpSession session){
         System.out.println(edit);
         User loginUser = (User) session.getAttribute(CONSTANT.LOGIN_USER);
         System.out.println(loginUser);
-        CommonResponse<String> result = userService.updateUserName(loginUser.getId(),type,edit);
+        CommonResponse<String> result = userService.updateUserInfo(loginUser.getId(),type,edit);
         if(result.isSuccess()){
             return CommonResponse.createForSuccessMessage("更新"+type+"成功");
         }
