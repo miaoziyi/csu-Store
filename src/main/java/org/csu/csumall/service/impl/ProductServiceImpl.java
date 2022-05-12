@@ -4,9 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.csu.csumall.common.Const;
+import org.csu.csumall.common.CONSTANT;
 import org.csu.csumall.common.ResponseCode;
 import org.csu.csumall.common.ServerResponse;
 import org.csu.csumall.entity.Category;
@@ -52,20 +51,20 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public ServerResponse<ProductDetailVo> getProductDetail(Integer productId) {
         if(productId == null){
-            return ServerResponse.createByErrorCodeMessage(
+            return ServerResponse.createForError(
                     ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
         Product product = productMapper.selectById(productId);
 //        System.out.println(product.getId());
-        if(product.getStatus() != Const.ProductStatusEnum.ON_SALE.getCode()){
-            return ServerResponse.createByErrorMessage("商品不在售，下架或其他情况");
+        if(product.getStatus() != CONSTANT.ProductStatusEnum.ON_SALE.getCode()){
+            return ServerResponse.createForError("商品不在售，下架或其他情况");
         }
         //DTO data transfer object :用于数据传输的数据对象都可以叫DTO
         //BO business object :对和server层交互的数据，进行封装修改
         //Vo view object :对数据进行进一步的封装
         ProductDetailVo productDetailVO = entityToVo(product);
 //        System.out.println(productDetailVO);
-        return ServerResponse.createBySuccess(productDetailVO);
+        return ServerResponse.createForSuccess(productDetailVO);
     }
 
     /*
@@ -107,18 +106,18 @@ public class ProductServiceImpl implements IProductService {
     public ServerResponse updateProductStatus(Integer productId, Integer status) {
         Product product = productMapper.selectById(productId);
         if(product == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"没有此产品");
+            return ServerResponse.createForError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"没有此产品");
         }
-        if(Const.ProductStatusEnum.isExist(status)){
+        if(CONSTANT.ProductStatusEnum.isExist(status)){
             product.setStatus(status);
             try {
                 productMapper.updateById(product);
-                return ServerResponse.createBySuccessMessage("修改状态成功");
+                return ServerResponse.createForSuccessMessage("修改状态成功");
             }catch (Exception e){
-                return ServerResponse.createByErrorMessage("修改状态失败");
+                return ServerResponse.createForError("修改状态失败");
             }
         }else {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"状态参数错误");
+            return ServerResponse.createForError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"状态参数错误");
         }
     }
 
@@ -137,9 +136,9 @@ public class ProductServiceImpl implements IProductService {
                 product.setCreateTime(LocalDateTime.now());
                 productMapper.insert(product);
             }
-            return ServerResponse.createBySuccessMessage("新增产品成功");
+            return ServerResponse.createForSuccessMessage("新增产品成功");
         }catch (Exception e){
-            return ServerResponse.createByErrorMessage("新增产品失败");
+            return ServerResponse.createForError("新增产品失败");
         }
     }
 
@@ -157,7 +156,7 @@ public class ProductServiceImpl implements IProductService {
         Map fileMap = Maps.newHashMap();
         fileMap.put("uri",targetFileName);
         fileMap.put("url",url);
-        return ServerResponse.createBySuccess("上传文件成功", fileMap);
+        return ServerResponse.createForSuccess("上传文件成功", fileMap);
     }
 
     /**
@@ -186,7 +185,7 @@ public class ProductServiceImpl implements IProductService {
         }
         //排序
         if(!StringUtils.isBlank(orderBy)){
-            if(Const.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)){
+            if(CONSTANT.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)){
                 String [] orderbystring = orderBy.split("_");
                 if(StringUtils.equals(orderbystring[1],"asc")){
                     query.orderByAsc(orderbystring[0]);
@@ -196,7 +195,7 @@ public class ProductServiceImpl implements IProductService {
             }
         }
         page = productMapper.selectPage(page, query);
-//        System.out.println(page.getRecords());
+        System.out.println(page.getRecords());
 
         List<ProductListVo> productListVOS = Lists.newArrayList();
         for(Product product : page.getRecords()){
@@ -210,8 +209,8 @@ public class ProductServiceImpl implements IProductService {
         pageResult.setTotal(page.getTotal());
         pageResult.setPages(page.getPages());
         pageResult.setCurrent(page.getCurrent());
-
-        return ServerResponse.createBySuccess( pageResult );
+        System.out.println(pageResult);
+        return ServerResponse.createForSuccess( pageResult );
     }
 
 

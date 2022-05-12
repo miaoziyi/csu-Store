@@ -1,7 +1,7 @@
 package org.csu.csumall.controller.portal;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.csu.csumall.common.Const;
+import org.csu.csumall.common.CONSTANT;
 import org.csu.csumall.common.ResponseCode;
 import org.csu.csumall.common.ServerResponse;
 import org.csu.csumall.entity.Shipping;
@@ -22,57 +22,57 @@ public class ShippingController {
     @Autowired
     private IShippingService iShippingService;
 
-    @RequestMapping("add.do")
+    @RequestMapping("add")
     @ResponseBody
     public ServerResponse add(HttpSession session, Shipping shipping)
     {
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        User user = (User)session.getAttribute(CONSTANT.CURRENT_USER);
         if(user ==null)
         {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+            return ServerResponse.createForError(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         return iShippingService.add(user.getId(), shipping);
     }
 
-    @RequestMapping("del.do")
+    @RequestMapping("del")
     @ResponseBody
     public ServerResponse del(HttpSession session,Integer shippingId){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        User user = (User)session.getAttribute(CONSTANT.CURRENT_USER);
         if(user ==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+            return ServerResponse.createForError(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         return iShippingService.del(user.getId(),shippingId);
     }
 
-    @RequestMapping("update.do")
+    @RequestMapping("update")
     @ResponseBody
     public ServerResponse update(HttpSession session,Shipping shipping){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        User user = (User)session.getAttribute(CONSTANT.CURRENT_USER);
         if(user ==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+            return ServerResponse.createForError(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         return iShippingService.update(user.getId(),shipping);
     }
 
-    @RequestMapping("select.do")
+    @RequestMapping("select")
     @ResponseBody
     public ServerResponse<Shipping> select(HttpSession session, Integer shippingId){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        User user = (User)session.getAttribute(CONSTANT.CURRENT_USER);
         if(user ==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+            return ServerResponse.createForError(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         return iShippingService.select(user.getId(),shippingId);
     }
 
-    @RequestMapping("list.do")
+    @RequestMapping("list")
     @ResponseBody
     public ServerResponse<Page> list(@RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
                                      @RequestParam(value = "pageSize",defaultValue = "10")int pageSize,
                                      HttpSession session)
     {
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+        User user = (User)session.getAttribute(CONSTANT.CURRENT_USER);
         if(user ==null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+            return ServerResponse.createForError(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
         }
         return iShippingService.list(user.getId(),pageNum,pageSize);
     }

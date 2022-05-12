@@ -1,55 +1,90 @@
 package org.csu.csumall.utils;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MD5Util {
 
-    private static String byteArrayToHexString(byte b[]) {
-        StringBuffer resultSb = new StringBuffer();
-        for (int i = 0; i < b.length; i++)
-            resultSb.append(byteToHexString(b[i]));
+    /**
+     * MD5加密字符串（32位大写）
+     *
+     * @param string 需要进行MD5加密的字符串
+     * @return 加密后的字符串（大写）
+     */
+    public static String md5Encrypt32Upper(String string) {
+        byte[] hash;
+        try {
+            //创建一个MD5算法对象，并获得MD5字节数组,16*8=128位
+            hash = MessageDigest.getInstance("MD5").digest(string.getBytes("UTF-8"));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Huh, MD5 should be supported?", e);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Huh, UTF-8 should be supported?", e);
+        }
 
-        return resultSb.toString();
-    }
-
-    private static String byteToHexString(byte b) {
-        int n = b;
-        if (n < 0)
-            n += 256;
-        int d1 = n / 16;
-        int d2 = n % 16;
-        return hexDigits[d1] + hexDigits[d2];
+        //转换为十六进制字符串
+        StringBuilder hex = new StringBuilder(hash.length * 2);
+        for (byte b : hash) {
+            if ((b & 0xFF) < 0x10) hex.append("0");
+            hex.append(Integer.toHexString(b & 0xFF));
+        }
+        return hex.toString().toUpperCase();
     }
 
     /**
-     * 返回大写MD5
+     * MD5加密字符串（32位小写）
      *
-     * @param origin
-     * @param charsetName
-     * @return
+     * @param string 需要进行MD5加密的字符串
+     * @return 加密后的字符串（小写）
      */
-    private static String MD5Encode(String origin, String charsetName) {
-        String resultString = null;
-        try {
-            resultString = new String(origin);
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            if (charsetName == null || "".equals(charsetName))
-                resultString = byteArrayToHexString(md.digest(resultString.getBytes()));
-            else
-                resultString = byteArrayToHexString(md.digest(resultString.getBytes(charsetName)));
-        } catch (Exception exception) {
+    private static String md5Encrypt32Lower(String string) {
+        //直接上面的方法转换成小写就可以了
+        return md5Encrypt32Upper(string).toLowerCase();
+    }
 
+    /**
+     * 将二进制字节数组转换为十六进制字符串
+     *
+     * @param bytes 二进制字节数组
+     * @return 十六进制字符串
+     */
+    private static String bytesToHex(byte[] bytes) {
+        StringBuffer hexStr = new StringBuffer();
+        int num;
+        for (int i = 0; i < bytes.length; i++) {
+            num = bytes[i];
+            if (num < 0) {
+                num += 256;
+            }
+            if (num < 16) {
+                hexStr.append("0");
+            }
+            hexStr.append(Integer.toHexString(num));
         }
-        return resultString.toUpperCase();
+        return hexStr.toString().toUpperCase();
     }
 
-    public static String MD5EncodeUtf8(String origin) {
-        origin = origin + PropertiesUtil.getProperty("password.salt", "");
-        return MD5Encode(origin, "utf-8");
+    /**
+     * Unicode中文编码转换成字符串
+     */
+    private static String unicodeToString(String str) {
+        Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
+        Matcher matcher = pattern.matcher(str);
+        char ch;
+        while (matcher.find()) {
+            ch = (char) Integer.parseInt(matcher.group(2), 16);
+            str = str.replace(matcher.group(1), ch + "");
+        }
+        return str;
     }
 
 
-    private static final String hexDigits[] = {"0", "1", "2", "3", "4", "5",
-            "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
-
+//
+//    public static void main(String[] args) {
+//        System.out.println(md5Encrypt32Lower("123456"));
+//        System.out.println(md5Encrypt32Upper("123456"));
+//    }
 }

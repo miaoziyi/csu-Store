@@ -5,7 +5,7 @@ import lombok.Getter;
 
 import java.util.Set;
 
-public class Const {
+public class CONSTANT {
 
     //递归分类的根节点值
     public static  int root_category = 0;
@@ -28,6 +28,17 @@ public class Const {
 
         String LIMIT_NUM_FAIL = "LIMIT_NUM_FAIL";
         String LIMIT_NUM_SUCCESS = "LIMIT_NUM_SUCCESS";
+    }
+
+    public interface USER_FIELDS{
+        String USERNAME = "username";
+        String EMAIL = "email";
+        String PHONE = "phone";
+    }
+
+    public interface ROLE{
+        int CUSTOMER = 0; //前台普通用户
+        int ADMIN = 1; //后台管理员
     }
 
     public interface Role

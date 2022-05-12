@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.csu.csumall.common.Const;
+import org.csu.csumall.common.CONSTANT;
 import org.csu.csumall.common.ResponseCode;
 import org.csu.csumall.common.ServerResponse;
 import org.csu.csumall.entity.Category;
@@ -39,21 +39,21 @@ public class CategoryServiceImpl implements ICategoryService {
         //todo sortorder插入问题
         if( parentId == null || StringUtils.isBlank(categoryName) )
         {
-            return ServerResponse.createByErrorMessage("添加品类参数错误");
+            return ServerResponse.createForError("添加品类参数错误");
         }
         Category category = new Category();
         category.setName(categoryName);
         category.setParentId(parentId);
-        category.setStatus(Const.ProductStatusEnum.ON_SALE.getCode());
-        category.setSortOrder(Const.SortOrderCode.First_category.getCode());
+        category.setStatus(CONSTANT.ProductStatusEnum.ON_SALE.getCode());
+        category.setSortOrder(CONSTANT.SortOrderCode.First_category.getCode());
         category.setCreateTime(LocalDateTime.now());
         category.setUpdateTime(LocalDateTime.now());
 
         try {
             categoryMapper.insert(category);
-            return ServerResponse.createBySuccess("新增商品分类成功");
+            return ServerResponse.createForSuccess("新增商品分类成功");
         }catch (Exception e){
-            return ServerResponse.createByErrorMessage("新增商品分类失败");
+            return ServerResponse.createForError("新增商品分类失败");
         }
     }
 
@@ -69,7 +69,7 @@ public class CategoryServiceImpl implements ICategoryService {
         if(CollectionUtils.isEmpty(categoryList)){
             logger.info("查找子分类时，没有找到该分类");
         }
-        return ServerResponse.createBySuccess(categoryList);
+        return ServerResponse.createForSuccess(categoryList);
     }
 
     /*
@@ -79,7 +79,7 @@ public class CategoryServiceImpl implements ICategoryService {
      * */
     public ServerResponse<List<Integer>> getAllChildren(Integer categoryId){
         Category category = categoryMapper.selectById(categoryId);
-        if(category != null || categoryId == Const.root_category){
+        if(category != null || categoryId == CONSTANT.root_category){
             Set<Category> categorySet = Sets.newHashSet();
             findAllChildrenCategory(categoryId, categorySet);
             List<Integer> categoryList = Lists.newArrayList();
@@ -88,9 +88,9 @@ public class CategoryServiceImpl implements ICategoryService {
                     categoryList.add(categoryItem.getId());
                 }
             }
-            return ServerResponse.createBySuccess(categoryList);
+            return ServerResponse.createForSuccess(categoryList);
         }else {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"此分类不存在");
+            return ServerResponse.createForError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"此分类不存在");
         }
     }
 
@@ -126,12 +126,12 @@ public class CategoryServiceImpl implements ICategoryService {
             category.setName(categoryName);
             try {
                 categoryMapper.updateById(category);
-                return ServerResponse.createBySuccessMessage("修改品类名称成功");
+                return ServerResponse.createForSuccessMessage("修改品类名称成功");
             }catch (Exception e){
-                return ServerResponse.createByErrorMessage("修改品类名称失败");
+                return ServerResponse.createForError("修改品类名称失败");
             }
         }else {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"没有此分类");
+            return ServerResponse.createForError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"没有此分类");
         }
     }
 
@@ -142,25 +142,25 @@ public class CategoryServiceImpl implements ICategoryService {
      * */
     public ServerResponse deleteCategory(Integer categoryId,Integer deleteType){
         if(categoryMapper.selectById(categoryId) == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"没有此分类");
+            return ServerResponse.createForError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"没有此分类");
         }
         QueryWrapper<Category> query = new QueryWrapper<>();
         query.eq("parent_id",categoryId);
         List<Category> categoryList = categoryMapper.selectList(query);
 
-        if(!CollectionUtils.isEmpty(categoryList) && deleteType == Const.DeleteTypeCode.cascade.getCode()){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ERROR.getCode(),"该品类有子品类，请选择级联删除");
+        if(!CollectionUtils.isEmpty(categoryList) && deleteType == CONSTANT.DeleteTypeCode.cascade.getCode()){
+            return ServerResponse.createForError(ResponseCode.ERROR.getCode(),"该品类有子品类，请选择级联删除");
         }
         try{
-            if(deleteType !=  Const.DeleteTypeCode.cascade.getCode()){
+            if(deleteType !=  CONSTANT.DeleteTypeCode.cascade.getCode()){
                 categoryMapper.deleteById(categoryId);
             }else {
                 //todo 删除品类未完成
                 categoryMapper.deleteById(categoryId);
             }
-            return ServerResponse.createBySuccessMessage("删除品类成功");
+            return ServerResponse.createForSuccessMessage("删除品类成功");
         }catch (Exception e){
-            return ServerResponse.createByErrorMessage("删除品类失败");
+            return ServerResponse.createForError("删除品类失败");
         }
     }
 

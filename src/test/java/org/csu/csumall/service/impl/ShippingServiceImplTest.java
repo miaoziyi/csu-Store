@@ -37,7 +37,7 @@ public class ShippingServiceImplTest {
         shipping.setUpdateTime(LocalDateTime.now());
         shipping.setCreateTime(LocalDateTime.now());
         ServerResponse response = shippingService.add(userId, shipping);
-        System.out.println(  response.getMsg()  );
+        System.out.println(  response.getMessage()  );
     }
 
     @Test
@@ -45,7 +45,7 @@ public class ShippingServiceImplTest {
         int userId = 1;
         int shippingId = 33;
         ServerResponse response = shippingService.del(userId, shippingId);
-        System.out.println(response.getMsg());
+        System.out.println(response.getMessage());
     }
 
     @Test
@@ -58,7 +58,7 @@ public class ShippingServiceImplTest {
         shipping.setReceiverZip("2222");
         shipping.setUpdateTime(LocalDateTime.now());
         ServerResponse response = shippingService.update(userId, shipping);
-        System.out.println(response.getMsg());
+        System.out.println(response.getMessage());
     }
 
     @Test
@@ -66,7 +66,7 @@ public class ShippingServiceImplTest {
         int userId = 1;
         int shippingId = 33;
         ServerResponse response = shippingService.select(userId, shippingId);
-        System.out.println(response.getMsg());
+        System.out.println(response.getMessage());
         Shipping shipping = (Shipping) response.getData();
         System.out.println( shipping.getReceiverAddress() );
     }

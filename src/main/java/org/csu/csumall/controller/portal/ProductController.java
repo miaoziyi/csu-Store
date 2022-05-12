@@ -21,7 +21,7 @@ public class ProductController {
     /*
      * 获取商品详情
      * */
-    @RequestMapping("detail.do")
+    @RequestMapping("detail")
     @ResponseBody
     public ServerResponse<ProductDetailVo> getProductDetail(Integer productId){
         return iProductService.getProductDetail(productId);
@@ -30,7 +30,7 @@ public class ProductController {
     /*
      * 获取商品列表
      * */
-    @RequestMapping("list.do")
+    @RequestMapping("list")
     @ResponseBody
     public ServerResponse<Page> getProduceList(
             @RequestParam(name = "categoryId", defaultValue = "0") Integer categoryId,

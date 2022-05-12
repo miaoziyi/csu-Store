@@ -29,9 +29,9 @@ public class ShippingServiceImpl implements IShippingService {
         {
             Map result = Maps.newHashMap();
             result.put("shippingId", shipping.getId());
-            return ServerResponse.createBySuccess("新建地址成功", result);
+            return ServerResponse.createForSuccess("新建地址成功", result);
         }
-        return ServerResponse.createByErrorMessage("新建地址失败");
+        return ServerResponse.createForError("新建地址失败");
     }
 
     @Override
@@ -40,9 +40,9 @@ public class ShippingServiceImpl implements IShippingService {
                 Wrappers.<Shipping>lambdaUpdate().eq(Shipping::getUserId, userId).eq(Shipping::getId, shippingId)
         );
         if(resultCount > 0){
-            return ServerResponse.createBySuccessMessage("删除地址成功");
+            return ServerResponse.createForSuccessMessage("删除地址成功");
         }
-        return ServerResponse.createByErrorMessage("删除地址失败");
+        return ServerResponse.createForError("删除地址失败");
     }
 
     @Override
@@ -51,9 +51,9 @@ public class ShippingServiceImpl implements IShippingService {
         int rowCount = shippingMapper.update(shipping,
                 Wrappers.<Shipping>lambdaUpdate().eq(Shipping::getUserId, userId).eq(Shipping::getId, shipping.getId()) );
         if(rowCount > 0){
-            return ServerResponse.createBySuccessMessage("更新地址成功");
+            return ServerResponse.createForSuccessMessage("更新地址成功");
         }
-        return ServerResponse.createByErrorMessage("更新地址失败");
+        return ServerResponse.createForError("更新地址失败");
     }
 
     @Override
@@ -62,16 +62,16 @@ public class ShippingServiceImpl implements IShippingService {
                 Wrappers.<Shipping>lambdaQuery().eq(Shipping::getUserId, userId).eq(Shipping::getId, shippingId)
         );
         if(shipping == null){
-            return ServerResponse.createByErrorMessage("无法查询到该地址");
+            return ServerResponse.createForError("无法查询到该地址");
         }
-        return ServerResponse.createBySuccess("查询地址成功",shipping);
+        return ServerResponse.createForSuccess("查询地址成功",shipping);
     }
 
     @Override
     public ServerResponse<Page> list(Integer userId, int pageNum, int pageSize) {
         Page<Shipping> page = new Page<>(pageNum, pageSize);
         page = shippingMapper.selectPage(page, Wrappers.<Shipping>lambdaQuery().eq(Shipping::getUserId, userId) );
-        return ServerResponse.createBySuccess(page);
+        return ServerResponse.createForSuccess(page);
     }
 
 }

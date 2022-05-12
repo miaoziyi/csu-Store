@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
-import org.csu.csumall.common.Const;
+import org.csu.csumall.common.CONSTANT;
 import org.csu.csumall.common.ResponseCode;
 import org.csu.csumall.common.ServerResponse;
 import org.csu.csumall.entity.Cart;
@@ -51,7 +51,7 @@ public class CartServiceImpl implements ICartService {
     public ServerResponse<CartVo> add(Integer userId, Integer productId, Integer count) {
         if(productId == null || count == null)
         {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
+            return ServerResponse.createForError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
         Cart cart = cartMapper.selectOne(
                 Wrappers.<Cart>lambdaUpdate().eq(Cart::getUserId, userId).eq(Cart::getProductId, productId)
@@ -60,7 +60,7 @@ public class CartServiceImpl implements ICartService {
         {
             Cart cartItem = new Cart();
             cartItem.setQuantity(count);
-            cartItem.setChecked(Const.Cart.CHECKED);
+            cartItem.setChecked(CONSTANT.Cart.CHECKED);
             cartItem.setProductId(productId);
             cartItem.setUserId(userId);
             cartItem.setCreateTime(LocalDateTime.now());
@@ -86,7 +86,7 @@ public class CartServiceImpl implements ICartService {
     @Override
     public ServerResponse<CartVo> update(Integer userId, Integer productId, Integer count) {
         if(productId == null || count == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
+            return ServerResponse.createForError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
         Cart cart = cartMapper.selectOne(
                 Wrappers.<Cart>lambdaUpdate().eq(Cart::getUserId, userId).eq(Cart::getProductId, productId)
@@ -111,7 +111,7 @@ public class CartServiceImpl implements ICartService {
         List<String> productList = Splitter.on(",").splitToList(productIds);
         if(CollectionUtils.isEmpty(productList))
         {
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
+            return ServerResponse.createForError(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
         cartMapper.delete(
                 Wrappers.<Cart>lambdaUpdate().eq(Cart::getUserId, userId).in(Cart::getProductId, productList)
@@ -127,7 +127,7 @@ public class CartServiceImpl implements ICartService {
     @Override
     public ServerResponse<CartVo> list(Integer userId) {
         CartVo cartVo = this.getCartVoLimit(userId);
-        return ServerResponse.createBySuccess(cartVo);
+        return ServerResponse.createForSuccess(cartVo);
     }
 
     /**
@@ -159,13 +159,13 @@ public class CartServiceImpl implements ICartService {
     @Override
     public ServerResponse<Integer> getCartProductCount(Integer userId) {
         if(userId == null){
-            return ServerResponse.createByError();
+            return ServerResponse.createForError();
         }
         QueryWrapper<Cart> QueryWrapper = new QueryWrapper<>();
         QueryWrapper.eq("user_id", userId).select("IFNULL(sum(quantity),0) as count");
         // todo 看看查询的结果能否从list修改为Int
         List<Map<String, Object>> resultList = cartMapper.selectMaps( QueryWrapper );
-        return ServerResponse.createBySuccess( Integer.parseInt(resultList.get(0).get("count").toString()) );
+        return ServerResponse.createForSuccess( Integer.parseInt(resultList.get(0).get("count").toString()) );
     }
 
     /**
@@ -223,10 +223,10 @@ public class CartServiceImpl implements ICartService {
                     if(product.getStock() >= cartItem.getQuantity()){
                         //库存充足的时候
                         buyLimitCount = cartItem.getQuantity();
-                        cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_SUCCESS);
+                        cartProductVo.setLimitQuantity(CONSTANT.Cart.LIMIT_NUM_SUCCESS);
                     }else{
                         buyLimitCount = product.getStock();
-                        cartProductVo.setLimitQuantity(Const.Cart.LIMIT_NUM_FAIL);
+                        cartProductVo.setLimitQuantity(CONSTANT.Cart.LIMIT_NUM_FAIL);
                         //购物车中更新有效库存
                         Cart cartForQuantity = new Cart();
                         cartForQuantity.setId(cartItem.getId());
@@ -238,7 +238,7 @@ public class CartServiceImpl implements ICartService {
                     cartProductVo.setProductTotalPrice(BigDecimalUtil.mul(product.getPrice().doubleValue(),cartProductVo.getQuantity()));
                     cartProductVo.setProductChecked(cartItem.getChecked());
                 }
-                if(cartItem.getChecked() == Const.Cart.CHECKED)
+                if(cartItem.getChecked() == CONSTANT.Cart.CHECKED)
                 {
                     //如果已经勾选,增加到整个的购物车总价中
                     cartTotalPrice = BigDecimalUtil.add(cartTotalPrice.doubleValue(),cartProductVo.getProductTotalPrice().doubleValue());
