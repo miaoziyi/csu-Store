@@ -1,7 +1,6 @@
-# CSUmall_API
 
 #### Description
-实训CSUmall_API
+CSU_STORE
 
 #### Software Architecture
 Software architecture description

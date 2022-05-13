@@ -1,7 +1,7 @@
-# CSUmall_API
 
 #### 介绍
-实训CSUmall_API
+CSU_STORE
+成员：苗子依 张杰 石安琪
 
 #### 软件架构
 软件架构说明
