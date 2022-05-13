@@ -1,12 +1,13 @@
 package org.csu.csumall.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
 public class Cart {
-
+    @TableId
     private Integer id;
 
     private Integer userId;
