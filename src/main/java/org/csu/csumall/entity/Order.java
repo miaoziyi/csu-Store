@@ -18,6 +18,7 @@ public class Order {
 
     private Integer shippingId;
 
+    @TableField(value="payment_price")
     private BigDecimal payment;
 
     private Integer paymentType;

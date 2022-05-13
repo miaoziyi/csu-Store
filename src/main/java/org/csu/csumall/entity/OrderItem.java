@@ -21,6 +21,7 @@ public class OrderItem {
 
     private String productImage;
 
+    @TableField(value="current_price")
     private BigDecimal currentUnitPrice;
 
     private Integer quantity;

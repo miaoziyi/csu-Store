@@ -1,11 +1,14 @@
 package org.csu.csumall.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import lombok.Data;
-
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 
 @Data
 public class Shipping {
+    //主键自增
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     private Integer userId;
