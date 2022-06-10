@@ -1,4 +1,4 @@
-package org.csu.csumall.controller.portal;
+package org.csu.csumall.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.csu.csumall.common.ServerResponse;

@@ -1,4 +1,4 @@
-package org.csu.csumall.controller.portal;
+package org.csu.csumall.controller;
 
 import org.springframework.context.annotation.Configuration;
 

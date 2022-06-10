@@ -1,6 +1,8 @@
 package org.csu.csumall.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -8,7 +10,8 @@ import java.time.LocalDateTime;
 
 @Data
 public class OrderItem {
-
+    //主键自增
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     private Integer userId;

@@ -1,16 +1,22 @@
-package org.csu.csumall.controller.portal;
+package org.csu.csumall.controller;
 
 import org.csu.csumall.common.CONSTANT;
 import org.csu.csumall.common.ServerResponse;
 import org.csu.csumall.entity.User;
 import org.csu.csumall.service.IUserService;
+import org.csu.csumall.utils.CookieUtil;
+import org.csu.csumall.utils.JSONUtil;
+import org.csu.csumall.utils.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/user/")
@@ -19,14 +25,23 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private RedisUtil redisUtil;
+
     @PostMapping("login")
     public ServerResponse<User> login(@RequestParam @Validated String username,
                                       @RequestParam @Validated String password,
-                                      HttpSession session) {
+                                      HttpSession session,
+                                      HttpServletResponse response) {
 
         ServerResponse<User> result = userService.login(username, password);
         if (result.isSuccess()) {
-            session.setAttribute(CONSTANT.CURRENT_USER, result.getData());
+            System.out.println("session: "+ session.getId());
+            String userJson = JSONUtil.obj2String(result.getData());
+            redisUtil.getRedisTemplate().opsForValue().set(session.getId(),userJson,60, TimeUnit.MINUTES);
+            CookieUtil.writeLoginToken(response,session.getId());
+
+//            session.setAttribute(CONSTANT.CURRENT_USER, result.getData());
         }
         return result;
     }
@@ -71,8 +86,11 @@ public class UserController {
     public ServerResponse<String> resetPassword(
             @RequestParam @Validated String oldPassword,
             @RequestParam @Validated String newPassword,
-            HttpSession session) {
-        User loginUser = (User) session.getAttribute(CONSTANT.CURRENT_USER);
+            HttpSession session,
+            HttpServletRequest request) {
+        String sessionId = CookieUtil.readLoginToken(request);
+        User loginUser =JSONUtil.string2Obj((String) redisUtil.getRedisTemplate().opsForValue().get(sessionId),User.class);
+//        User loginUser = (User) session.getAttribute(CONSTANT.CURRENT_USER);
         if (loginUser == null) {
             return ServerResponse.createForError("用户未登录");
         }
@@ -80,8 +98,10 @@ public class UserController {
     }
 
     @PostMapping("get_user_detail")
-    public ServerResponse<User> getUserDetail(HttpSession session) {
-        User loginUser = (User) session.getAttribute(CONSTANT.CURRENT_USER);
+    public ServerResponse<User> getUserDetail(HttpSession session,HttpServletRequest request) {
+//        User loginUser = (User) session.getAttribute(CONSTANT.CURRENT_USER);
+        String sessionId = CookieUtil.readLoginToken(request);
+        User loginUser =JSONUtil.string2Obj((String) redisUtil.getRedisTemplate().opsForValue().get(sessionId),User.class);
         if (loginUser == null) {
             return ServerResponse.createForError("用户未登录");
         }
@@ -89,9 +109,11 @@ public class UserController {
     }
 
     @PostMapping("update_user_info")
-    public ServerResponse<String> updateUserInfo(@RequestParam String type, @RequestParam String edit, HttpSession session) {
+    public ServerResponse<String> updateUserInfo(@RequestParam String type, @RequestParam String edit, HttpSession session,HttpServletRequest request) {
         System.out.println(edit);
-        User loginUser = (User) session.getAttribute(CONSTANT.CURRENT_USER);
+        String sessionId = CookieUtil.readLoginToken(request);
+        User loginUser =JSONUtil.string2Obj((String) redisUtil.getRedisTemplate().opsForValue().get(sessionId),User.class);
+//        User loginUser = (User) session.getAttribute(CONSTANT.CURRENT_USER);
         System.out.println(loginUser);
         ServerResponse<String> result = userService.updateUserInfo(loginUser.getId(), type, edit);
         if (result.isSuccess()) {
@@ -122,8 +144,9 @@ public class UserController {
 //    }
 
     @GetMapping("logout")
-    public ServerResponse<String> logout(HttpSession session) {
-        session.removeAttribute(CONSTANT.CURRENT_USER);
+    public ServerResponse<String> logout(HttpServletRequest request,HttpSession session,HttpServletResponse response) {
+//        session.removeAttribute(CONSTANT.CURRENT_USER);
+        CookieUtil.delLoginToken(request,response);
         return ServerResponse.createForSuccess("退出登录成功");
     }
 }
