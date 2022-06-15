@@ -101,7 +101,9 @@ public class UserController {
     public ServerResponse<User> getUserDetail(HttpSession session,HttpServletRequest request) {
 //        User loginUser = (User) session.getAttribute(CONSTANT.CURRENT_USER);
         String sessionId = CookieUtil.readLoginToken(request);
+        System.out.println(sessionId);
         User loginUser =JSONUtil.string2Obj((String) redisUtil.getRedisTemplate().opsForValue().get(sessionId),User.class);
+        System.out.println(loginUser);
         if (loginUser == null) {
             return ServerResponse.createForError("用户未登录");
         }

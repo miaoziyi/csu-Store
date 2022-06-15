@@ -8,15 +8,18 @@ import javax.servlet.http.HttpServletResponse;
 
 public class CookieUtil {
 
-    private final static String COOKIE_DOMAIN = "localhost";
+    private final static String COOKIE_DOMAIN = "120.77.145.133";
     private final static String COOKIE_NAME = "login_token";
 
 
     public static String readLoginToken(HttpServletRequest request){
         Cookie[] cks = request.getCookies();
+        System.out.println(cks);
         if(cks != null){
             for(Cookie ck : cks){
+                System.out.println(ck);
                 if(StringUtils.equals(ck.getName(),COOKIE_NAME)){
+                    System.out.println(ck.getName());
                     return ck.getValue();
                 }
             }
@@ -26,6 +29,7 @@ public class CookieUtil {
 
     public static void writeLoginToken(HttpServletResponse response, String token){
         Cookie ck = new Cookie(COOKIE_NAME,token);
+        System.out.println("write:"+ck);
         ck.setDomain(COOKIE_DOMAIN);
         ck.setPath("/");//代表设置在根目录
         ck.setHttpOnly(true);

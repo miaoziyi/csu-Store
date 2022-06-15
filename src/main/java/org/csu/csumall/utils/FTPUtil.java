@@ -51,8 +51,11 @@ public class FTPUtil {
                 ftpClient.setBufferSize(1024);//设置缓冲区
                 ftpClient.setControlEncoding("UTF-8");
                 ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+//                被动模式 服务端需开启
+                ftpClient.enterLocalPassiveMode();
                 for(File fileItem : fileList){
                     fis = new FileInputStream(fileItem);
+                    System.out.println("-------------------------------try 上传--------------");
                     ftpClient.storeFile(fileItem.getName(), fis);
                 }
             }catch (IOException e){

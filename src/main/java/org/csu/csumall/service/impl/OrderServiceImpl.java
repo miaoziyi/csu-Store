@@ -7,6 +7,7 @@ import com.alipay.demo.trade.model.ExtendParams;
 import com.alipay.demo.trade.model.GoodsDetail;
 import com.alipay.demo.trade.model.builder.AlipayTradePrecreateRequestBuilder;
 import com.alipay.demo.trade.model.result.AlipayF2FPrecreateResult;
+
 import com.alipay.demo.trade.service.AlipayTradeService;
 import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
 import com.alipay.demo.trade.utils.ZxingUtils;
@@ -192,7 +193,7 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public ServerResponse<Page> getOrderList(Integer userId, int pageNum, int pageSize){
         Page<Order> page = new Page<>(pageNum, pageSize);
-        page = orderMapper.selectPage(page, Wrappers.<Order>query().eq("user_id",userId));
+        page = orderMapper.selectPage(page, Wrappers.<Order>query().eq("user_id",userId).orderByDesc("create_time"));
         List<Order> orderList = page.getRecords();
         List<OrderVo> orderVoList = assembleOrderVoList(orderList, userId);
         Page<OrderVo> pageResult = new Page<>();
